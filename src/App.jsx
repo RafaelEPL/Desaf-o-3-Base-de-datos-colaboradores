@@ -1,35 +1,53 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState } from "react";
+import Listado from "./components/Listado";
+import Formulario from "./components/Formulario";
+import Alerta from "./components/Alert";
+import { Buscador } from "./components/Buscador";
+import { BaseColaboradores } from "./BaseColaborades";
+import "./App.css";
+
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [listaNombres, setListaNombres] = useState(BaseColaboradores);
+  const [mensaje, setMensaje] = useState(null);
+  const [colorAlerta, setColorAlerta] = useState(null);
+
+  const agregarColaborador = (nuevoColaborador) => {
+    setListaNombres([
+      ...listaNombres,
+      { ...nuevoColaborador, id: listaNombres.length + 1 },
+    ]);
+  };
+
+  const mostrarAlerta = (mensaje, color) => {
+    setMensaje(mensaje);
+    setColorAlerta(color);
+  };
+
+  const handleFilterListaColaboradores = (listaColaboradoresFiltered) => {
+    setListaNombres(listaColaboradoresFiltered);
+  };
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+
+      <div className="app-container">
+        <h3 className='text-buscar'>Buscar colaborador</h3>
+        <Buscador
+          listaColaboradores={listaNombres}
+          setListaColaboradores={handleFilterListaColaboradores}
+        />
+        <div className="orden">
+          <Formulario
+            onAlert={mostrarAlerta}
+            onAgregarColaborador={agregarColaborador}
+          />
+          <Listado listaColaboradores={listaNombres} />
+        </div>
+        <Alerta mensaje={mensaje} color={colorAlerta} />
+      </div></>
+
+  );
 }
 
-export default App
+export default App;
